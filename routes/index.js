@@ -48,7 +48,7 @@ router.get('/reduce/:id',function (req,res,next) {
     res.redirect('/shopping-cart');
 });
 
-router.get('/remove+/:id',function (req,res,next) {
+router.get('/remove/:id',function (req,res,next) {
     var productId = req.params.id;
     var cart = new Cart(req.session.cart?req.session.cart:{});
 
@@ -62,6 +62,7 @@ router.get('/shopping-cart',function (req,res,next) {
       return res.render('shop/shopping-cart',{products:null});
    }
    var cart = new Cart(req.session.cart);
+   console.log(cart);
    res.render('shop/shopping-cart',{products:cart.generatedArray(),totalPrice:cart.totalPrice});
 });
 

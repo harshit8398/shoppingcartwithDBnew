@@ -1,5 +1,4 @@
-/**
- * Created by Harshit Gupta on 14-08-2017.
+/* Created by Harshit Gupta on 14-08-2017.
  */
 
 Stripe.setPublishableKey('pk_test_077rMYulBFDuHv6S4oGViAbB');
