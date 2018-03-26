@@ -11,13 +11,17 @@ var passport = require('passport');
 var flash = require('connect-flash');
 var validator = require('express-validator');
 var MongoStore = require('connect-mongo')(session);
-
+var keys = require('./config/keys');
 
 var index = require('./routes/index');
 var user = require('./routes/user');
 var app = express();
 
-mongoose.connect('localhost:27017/shopping');
+mongoose.Promise = global.Promise;
+
+mongoose.connect(keys.mongoURI,{mongoClient : true})
+    .then(console.log('Mongo DB connected'));
+
 require('./config/passport');
 // view engine setup
 app.engine('.hbs',expressHbs({defaultLayout:'layout',extname:'.hbs'}));
@@ -43,31 +47,17 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function (req,res,next) {
-   res.locals.login = req.isAuthenticated();
-   res.locals.session = req.session;
-   next();
+    res.locals.login = req.isAuthenticated();
+    res.locals.session = req.session;
+    next();
 });
 
 app.use('/user',user);
 app.use('/', index);
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+const port = process.env.PORT || 4000;
+
+app.listen(port, () => {
+    console.log('Server started on port',port);
 });
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;
